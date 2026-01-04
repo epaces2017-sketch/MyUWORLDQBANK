@@ -682,45 +682,16 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/** ===========================
- *  0) SAMPLE DATA (replace later)
- *  =========================== */
-const QUESTIONS = [
-  {
-    qid: "Q.001",
-    stem: "A 24-year-old man comes to the ED with 8 hours of abdominal pain, nausea, vomiting. Family history of pancreatitis and hyperlipidemia. Glucose 50 mg/dL, TG 3500 mg/dL, lipase 400 U/L; serum appears milky. Most likely deficiency of which?",
-    image: "",
-    options: ["ApoE", "Hormone-sensitive lipase", "Lipoprotein lipase", "ApoB-100"],
-    correctIndex: 2,
-    explanation: "Severe hypertriglyceridemia (>1000) can trigger acute pancreatitis. Familial chylomicronemia (Type I) is due to LPL deficiency or ApoC-II deficiency → impaired chylomicron clearance.",
-    objective: "HyperTG pancreatitis: LPL (or ApoC-II) deficiency → ↑ chylomicrons → pancreatitis, eruptive xanthomas, lipemia retinalis.",
-    system: "Biochemistry",
-    topic: "Lipoproteins"
-  },
-  {
-    qid: "Q.002",
-    stem: "A 30-year-old woman has heat intolerance, weight loss, tremor, tachycardia. Labs show low TSH and high free T4. Mechanism of action of first-line drug?",
-    image: "",
-    options: ["Inhibits thyroid peroxidase", "Blocks T3 receptor", "Blocks Na+/I- symporter", "Inhibits 5'-deiodinase only"],
-    correctIndex: 0,
-    explanation: "Methimazole and PTU inhibit thyroid peroxidase (organification + coupling). PTU also inhibits 5'-deiodinase.",
-    objective: "Thionamides: inhibit TPO; PTU also blocks peripheral T4→T3.",
-    system: "Endocrine",
-    topic: "Thyroid pharmacology"
-  },
-  {
-    qid: "Q.003",
-    stem: "A patient with chronic alcoholism presents with confusion, ophthalmoplegia, and ataxia. Which vitamin deficiency explains this?",
-    image: "",
-    options: ["B1 (Thiamine)", "B3 (Niacin)", "B6 (Pyridoxine)", "B12 (Cobalamin)"],
-    correctIndex: 0,
-    explanation: "Wernicke encephalopathy: confusion, ophthalmoplegia, ataxia due to thiamine deficiency.",
-    objective: "Give thiamine before glucose in suspected Wernicke.",
-    system: "Neurology",
-    topic: "Vitamins"
-  }
-];
-
+  
+let QUESTIONS = [];
+async function loadQuestions() {
+  const res = await fetch("./questions.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to load questions.json: ${res.status} ${res.statusText}`);
+  const data = await res.json();
+  if (!Array.isArray(data)) throw new Error("questions.json must be an array of questions");
+  QUESTIONS = data;
+  console.log("Loaded questions:", QUESTIONS.length);
+}
 /** ===========================
  *  1) STORAGE + STATE
  *  =========================== */
@@ -846,6 +817,18 @@ function setActiveTab(tab){
   } else {
     tA.classList.add("active");
     document.getElementById("viewAnalytics").style.display = "block";
+    (async function initApp(){
+  try {
+    await loadQuestions();
+    initFilters();
+    updateHeaderCounts();
+    renderEmptyState("Build a block to start.");
+    toast(`Loaded ${QUESTIONS.length} questions.`);
+  } catch (err) {
+    console.error(err);
+    renderEmptyState("Could not load questions.json");
+  }
+})();
     renderAnalytics();
   }
 }
@@ -889,6 +872,19 @@ function initFilters(){
   if(ui.blockSize) document.getElementById("blockSize").value = ui.blockSize;
   if(ui.includeCompleted) document.getElementById("includeCompleted").value = ui.includeCompleted;
   if(ui.excludeRaw) document.getElementById("excludeBox").value = ui.excludeRaw;
+
+  (async function initApp(){
+  try {
+    await loadQuestions();
+    initFilters();
+    updateHeaderCounts();
+    renderEmptyState("Build a block to start.");
+    toast(`Loaded ${QUESTIONS.length} questions.`);
+  } catch (err) {
+    console.error(err);
+    renderEmptyState("Could not load questions.json");
+  }
+})();
 
   updateModeLabel();
 }
