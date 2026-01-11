@@ -2,14 +2,14 @@
       --bg:#ffffff;
       --panel:#f5f7fa;
       --panel2:#f0f3f8;
-      --text:#1a2d4a;
-      --muted:#5a6b7d;
+      --text:#000000;
+      --muted:#333333;
       --accent:#2563eb;
       --good:#059669;
       --bad:#dc2626;
       --warn:#f59e0b;
-      --border:rgba(0,0,0,.08);
-      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --border:rgba(0,0,0,.15);
+      --shadow: 0 10px 30px rgba(0,0,0,.1);
       --radius:14px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
