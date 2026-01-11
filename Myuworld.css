@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Step 1 QBank (UWorld-ish)</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#111a2f;
+      --panel2:#0e1730;
+      --text:#e7ecff;
+      --muted:#a9b3d6;
+      --accent:#4aa3ff;
+      --good:#33d17a;
+      --bad:#ff5c5c;
+      --warn:#ffd166;
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1100px 600px at 10% 0%, rgba(74,163,255,.18), transparent 60%),
+                  radial-gradient(900px 500px at 90% 0%, rgba(51,209,122,.14), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    .container{
+      max-width: 1180px;
+      margin: 24px auto;
+      padding: 0 16px 48px;
+    }
+    header{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:14px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:40px;height:40px;border-radius:12px;
+      background: linear-gradient(135deg, rgba(74,163,255,.95), rgba(51,209,122,.85));
+      box-shadow: var(--shadow);
+    }
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .tabbtn{
+      cursor:pointer;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight:700;
+      font-size:13px;
+    }
+    .tabbtn.active{
+      border-color: rgba(74,163,255,.45);
+      background: rgba(74,163,255,.18);
+    }
+    .pill{
+      font-family: var(--mono);
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.20);
+      color: var(--muted);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      white-space:nowrap;
+    }
+    .pill strong{color:var(--text); font-weight:800}
+    .qmeta{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:16px;
+      align-items:start;
+    }
+    @media (max-width: 1020px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(17,26,47,.96), rgba(14,23,48,.96));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .head{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .card .head h2{
+      margin:0;
+      font-size:14px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.35px;
+      text-transform:uppercase;
+    }
+    .card .body{padding:14px}
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    select, input, textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.20);
+      color: var(--text);
+      outline: none;
+      font-family: var(--sans);
+    }
+    textarea{min-height:92px; resize:vertical}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    .row3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px}
+    .muted{color:var(--muted); font-size:12px}
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    button{
+      cursor:pointer;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-weight:800;
+    }
+    button.primary{
+      background: rgba(74,163,255,.20);
+      border-color: rgba(74,163,255,.35);
+    }
+    button.danger{
+      background: rgba(255,92,92,.16);
+      border-color: rgba(255,92,92,.35);
+    }
+    button:disabled{opacity:.5; cursor:not-allowed}
+
+    .qwrap{padding:16px}
+    .qtop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .qid{
+      font-family: var(--mono);
+      font-size:12px;
+      color: var(--muted);
+      margin-bottom:6px;
+    }
+    .stem{
+      font-size:15px;
+      line-height:1.5;
+      margin:0;
+      white-space:pre-wrap;
+    }
+    .imgbox{
+      margin-top:12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow:hidden;
+      background: rgba(0,0,0,.20);
+    }
+    .imgbox img{display:block; width:100%; height:auto}
+    .options{margin-top:14px; display:grid; gap:10px}
+    .opt{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      transition: transform .05s ease, border-color .15s ease;
+    }
+    .opt:hover{transform: translateY(-1px); border-color: rgba(74,163,255,.40)}
+    .opt input{width:auto; margin-top:2px}
+    .opt .letter{
+      width:24px;height:24px;border-radius:8px;
+      display:grid;place-items:center;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      font-family: var(--mono);
+      color: var(--muted);
+      flex:0 0 auto;
+    }
+    .opt.correct{border-color: rgba(51,209,122,.55); background: rgba(51,209,122,.10)}
+    .opt.wrong{border-color: rgba(255,92,92,.55); background: rgba(255,92,92,.10)}
+    .opt.chosen{outline: 2px solid rgba(74,163,255,.35)}
+    .actions{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px solid var(--border);
+    }
+    .leftActions,.rightActions{display:flex; gap:10px; flex-wrap:wrap}
+    .explain{
+      margin-top:16px;
+      border-top:1px solid var(--border);
+      padding-top:14px;
+      display:none;
+    }
+    .explain h3{
+      margin:0 0 8px;
+      font-size:13px;
+      color: var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.35px;
+    }
+    .explain p{margin:0 0 10px; white-space:pre-wrap; line-height:1.45}
+    .kv{
+      display:grid;
+      grid-template-columns: 140px 1fr;
+      gap:8px 12px;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .kv .k{color:var(--muted)}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:18px;
+      background: rgba(0,0,0,.55);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      display:none;
+      max-width: min(820px, calc(100% - 24px));
+      font-size:13px;
+      z-index:50;
+    }
+
+    /* Review table */
+    .reviewWrap{padding:14px}
+    .reviewHeader{
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid var(--border);
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--border);
+      text-align:left;
+      vertical-align:top;
+    }
+    th{color:var(--muted); font-weight:800; background: rgba(0,0,0,.18)}
+    tr:hover td{background: rgba(74,163,255,.06)}
+    .linkbtn{
+      cursor:pointer;
+      border:none;
+      background:none;
+      color: var(--accent);
+      font-weight:900;
+      padding:0;
+      text-decoration: underline;
+    }
+    .badge{
+      font-family: var(--mono);
+      font-weight:900;
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      white-space:nowrap;
+      background: rgba(0,0,0,.15);
+      color: var(--muted);
+    }
+    .badge.good{border-color: rgba(51,209,122,.35); color: rgba(51,209,122,.95)}
+    .badge.bad{border-color: rgba(255,92,92,.35); color: rgba(255,92,92,.95)}
+    .badge.warn{border-color: rgba(255,209,102,.35); color: rgba(255,209,102,.98)}
+    .badge.neutral{border-color: rgba(255,255,255,.18); color: var(--muted)}
+    .nowrap{white-space:nowrap}
+
+    /* Analytics */
+    .analyticsWrap{padding:14px}
+    .statGrid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      margin-bottom:12px;
+    }
+    @media (max-width: 980px) {
+      .statGrid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .statCard{
+      border:1px solid var(--border);
+      border-radius: 14px;
+      padding:12px;
+      background: rgba(0,0,0,.18);
+    }
+    .statCard .label{font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:800; text-transform:uppercase; letter-spacing:.35px}
+    .statCard .value{font-size:22px; font-weight:900}
+    .mini{font-size:12px; color:var(--muted); margin-top:6px}
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <header>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>Step 1 QBank (UWorld-ish)</h1>
+        <p>Blocks • Review • Analytics • Filters • Timer • Flags • Exclusions</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tabbtn active" id="tabPractice">Practice</button>
+      <button class="tabbtn" id="tabReview">Review</button>
+      <button class="tabbtn" id="tabAnalytics">Analytics</button>
+    </div>
+
+    <div class="qmeta">
+      <span class="pill">Total: <strong id="totalCount">0</strong></span>
+      <span class="pill">Current block: <strong id="blockCount">0</strong></span>
+      <span class="pill">Correct: <strong id="correctCount">0</strong></span>
+      <span class="pill">Incorrect: <strong id="incorrectCount">0</strong></span>
+      <span class="pill">Flagged: <strong id="flaggedCount">0</strong></span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- LEFT: Setup -->
+    <div class="card" id="leftPanel">
+      <div class="head">
+        <h2>Block Setup</h2>
+        <span class="pill">Mode: <strong id="modeLabel">Tutor</strong></span>
+      </div>
+      <div class="body">
+        <div class="row">
+          <div>
+            <label for="systemSelect">System</label>
+            <select id="systemSelect"></select>
+          </div>
+          <div>
+            <label for="topicSelect">Topic</label>
+            <select id="topicSelect"></select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label for="statusSelect">Status filter</label>
+            <select id="statusSelect">
+              <option value="ALL">All</option>
+              <option value="UNSEEN">Unseen</option>
+              <option value="INCORRECT">Incorrect</option>
+              <option value="CORRECT">Correct</option>
+              <option value="SKIPPED">Skipped</option>
+            </select>
+          </div>
+          <div>
+            <label for="flagOnly">Flag filter</label>
+            <select id="flagOnly">
+              <option value="ALL">All</option>
+              <option value="FLAGGED">Flagged only</option>
+              <option value="UNFLAGGED">Unflagged only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row3" style="margin-top:10px">
+          <div>
+            <label for="modeSelect">Mode</label>
+            <select id="modeSelect">
+              <option value="TUTOR">Tutor</option>
+              <option value="TIMED">Timed</option>
+            </select>
+          </div>
+          <div>
+            <label for="timeLimitSec">Time limit (sec)</label>
+            <input id="timeLimitSec" type="number" min="10" step="5" value="90" />
+            <div class="muted" style="margin-top:6px">Used only in Timed mode.</div>
+          </div>
+          <div>
+            <label for="orderSelect">Order</label>
+            <select id="orderSelect">
+              <option value="SHUFFLE">Shuffle</option>
+              <option value="INORDER">In order (QID)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label for="blockSize">Block size</label>
+            <input id="blockSize" type="number" min="1" step="1" value="40" />
+            <div class="muted" style="margin-top:6px">Classic is 40. Or be chaotic. Your choice 😈</div>
+          </div>
+          <div>
+            <label for="includeCompleted">Include completed?</label>
+            <select id="includeCompleted">
+              <option value="NO">No (recommended)</option>
+              <option value="YES">Yes</option>
+            </select>
+            <div class="muted" style="margin-top:6px">If “No”, correct/incorrect questions are excluded unless your Status filter says otherwise.</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label for="excludeBox">Exclude QIDs (comma/space/newline)</label>
+          <textarea id="excludeBox" placeholder="Example: Q.001, Q.017, Q.120"></textarea>
+          <div class="muted" style="margin-top:6px">
+            Paste a list. These QIDs are removed from the block pool.
+          </div>
+        </div>
+
+        <div class="btnrow">
+          <button class="primary" id="buildBlockBtn">Build block</button>
+          <button id="newBlockBtn">New block (reshuffle)</button>
+          <button class="danger" id="resetProgressBtn">Reset progress</button>
+        </div>
+
+        <div style="margin-top:12px" class="muted">
+          Keyboard: <span class="pill">←</span> prev, <span class="pill">→</span> next, <span class="pill">Enter</span> submit,
+          <span class="pill">F</span> flag, <span class="pill">S</span> skip, <span class="pill">R</span> review, <span class="pill">A</span> analytics
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Main content area -->
+    <div class="card">
+      <!-- PRACTICE -->
+      <div id="viewPractice">
+        <div class="head">
+          <h2>Practice</h2>
+          <div class="qmeta">
+            <span class="pill">Timer: <strong id="timerLabel">00:00</strong></span>
+            <span class="pill">Spent: <strong id="spentLabel">0s</strong></span>
+            <span class="pill">Status: <strong id="statusLabel">UNSEEN</strong></span>
+            <span class="pill">Flag: <strong id="flagLabel">No</strong></span>
+          </div>
+        </div>
+
+        <div class="qwrap">
+          <div class="qtop">
+            <div>
+              <div class="qid" id="qidLabel">Q.---</div>
+              <p class="stem" id="stemText">Build a block to start.</p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end">
+              <span class="pill">System: <strong id="sysLabel">-</strong></span>
+              <span class="pill">Topic: <strong id="topLabel">-</strong></span>
+              <span class="pill">In block: <strong id="posLabel">0/0</strong></span>
+            </div>
+          </div>
+
+          <div class="imgbox" id="imgBox" style="display:none">
+            <img id="qImg" alt="Question image"/>
+          </div>
+
+          <div class="options" id="optionsBox"></div>
+
+          <div class="actions">
+            <div class="leftActions">
+              <button id="prevBtn">Prev</button>
+              <button id="nextBtn">Next</button>
+              <button id="skipBtn">Skip</button>
+            </div>
+            <div class="rightActions">
+              <button id="flagBtn">Flag</button>
+              <button class="primary" id="submitBtn">Submit</button>
+              <button id="revealBtn" style="display:none">Show Explanation</button>
+              <button id="toReviewBtn">Review</button>
+            </div>
+          </div>
+
+          <div class="explain" id="explainBox">
+            <h3>Explanation</h3>
+            <p id="explainText"></p>
+
+            <h3>Educational objective</h3>
+            <p id="objText"></p>
+
+            <div class="kv">
+              <div class="k">Correct answer</div><div id="correctText"></div>
+              <div class="k">Your answer</div><div id="yourText"></div>
+              <div class="k">Time spent</div><div id="timeText"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEW -->
+      <div id="viewReview" style="display:none">
+        <div class="head">
+          <h2>Review (Current Block)</h2>
+          <div class="qmeta">
+            <span class="pill">Answered: <strong id="answeredInBlock">0</strong></span>
+            <span class="pill">Unseen: <strong id="unseenInBlock">0</strong></span>
+            <span class="pill">Flagged: <strong id="flaggedInBlock">0</strong></span>
+          </div>
+        </div>
+        <div class="reviewWrap">
+          <div class="reviewHeader">
+            <div class="muted">
+              Click a QID to jump. UWorld vibes, minus the existential dread invoice.
+            </div>
+            <div class="btnrow" style="margin:0">
+              <button id="backToPracticeBtn" class="primary">Back to practice</button>
+              <button id="markUnseenBtn">Mark all unseen</button>
+              <button id="clearFlagsBtn">Clear flags (block)</button>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th class="nowrap">#</th>
+                <th class="nowrap">QID</th>
+                <th>System / Topic</th>
+                <th class="nowrap">Status</th>
+                <th class="nowrap">Flag</th>
+                <th class="nowrap">Time</th>
+              </tr>
+            </thead>
+            <tbody id="reviewTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div id="viewAnalytics" style="display:none">
+        <div class="head">
+          <h2>Analytics</h2>
+          <div class="qmeta">
+            <span class="pill">Questions: <strong id="anTotal">0</strong></span>
+            <span class="pill">Accuracy: <strong id="anAcc">0%</strong></span>
+            <span class="pill">Avg time: <strong id="anAvgTime">0s</strong></span>
+            <span class="pill">Flag rate: <strong id="anFlagRate">0%</strong></span>
+          </div>
+        </div>
+
+        <div class="analyticsWrap">
+          <div class="statGrid">
+            <div class="statCard">
+              <div class="label">Correct</div>
+              <div class="value" id="anCorrect">0</div>
+              <div class="mini">Total correct answers recorded</div>
+            </div>
+            <div class="statCard">
+              <div class="label">Incorrect</div>
+              <div class="value" id="anIncorrect">0</div>
+              <div class="mini">Total incorrect answers recorded</div>
+            </div>
+            <div class="statCard">
+              <div class="label">Unseen</div>
+              <div class="value" id="anUnseen">0</div>
+              <div class="mini">Not attempted yet</div>
+            </div>
+            <div class="statCard">
+              <div class="label">Skipped</div>
+              <div class="value" id="anSkipped">0</div>
+              <div class="mini">Skipped / timed out</div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-bottom:12px">
+            <div class="statCard">
+              <div class="label">Weakest Systems (by accuracy)</div>
+              <div class="mini" id="weakSystems">—</div>
+            </div>
+            <div class="statCard">
+              <div class="label">Weakest Topics (by accuracy)</div>
+              <div class="mini" id="weakTopics">—</div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-bottom:12px">
+            <div>
+              <label for="analyticsGroupBy">Group stats by</label>
+              <select id="analyticsGroupBy">
+                <option value="SYSTEM">System</option>
+                <option value="TOPIC">Topic</option>
+              </select>
+              <div class="muted" style="margin-top:6px">Shows accuracy, attempts, time by category.</div>
+            </div>
+            <div>
+              <label for="analyticsSort">Sort by</label>
+              <select id="analyticsSort">
+                <option value="ACC_ASC">Accuracy (low → high)</option>
+                <option value="ACC_DESC">Accuracy (high → low)</option>
+                <option value="ATTEMPTS_DESC">Attempts (high → low)</option>
+                <option value="TIME_DESC">Avg time (high → low)</option>
+              </select>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th class="nowrap">Accuracy</th>
+                <th class="nowrap">Correct</th>
+                <th class="nowrap">Incorrect</th>
+                <th class="nowrap">Skipped</th>
+                <th class="nowrap">Unseen</th>
+                <th class="nowrap">Attempts</th>
+                <th class="nowrap">Avg time</th>
+                <th class="nowrap">Flagged</th>
+              </tr>
+            </thead>
+            <tbody id="analyticsTbody"></tbody>
+          </table>
+
+          <div class="btnrow">
+            <button id="backToPracticeBtn2" class="primary">Back to practice</button>
+            <button id="exportProgressBtn">Export progress JSON</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">
+            Export is useful when you later move to a backend (or when your future self asks “why am I like this?”).
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="Myuworld.full.js" defer></script>
+</body>
+</html>
