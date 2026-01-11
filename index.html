@@ -342,7 +342,9 @@
       gap:10px;
       margin-bottom:12px;
     }
-    @media (max-width: 980px){ .statGrid{grid-template-columns: repeat(2, 1fr);} }
+    @media (max-width: 980px) {
+      .statGrid { grid-template-columns: repeat(2, 1fr); }
+    }
     .statCard{
       border:1px solid var(--border);
       border-radius: 14px;
@@ -817,18 +819,6 @@ function setActiveTab(tab){
   } else {
     tA.classList.add("active");
     document.getElementById("viewAnalytics").style.display = "block";
-    (async function initApp(){
-  try {
-    await loadQuestions();
-    initFilters();
-    updateHeaderCounts();
-    renderEmptyState("Build a block to start.");
-    toast(`Loaded ${QUESTIONS.length} questions.`);
-  } catch (err) {
-    console.error(err);
-    renderEmptyState("Could not load questions.json");
-  }
-})();
     renderAnalytics();
   }
 }
@@ -872,19 +862,6 @@ function initFilters(){
   if(ui.blockSize) document.getElementById("blockSize").value = ui.blockSize;
   if(ui.includeCompleted) document.getElementById("includeCompleted").value = ui.includeCompleted;
   if(ui.excludeRaw) document.getElementById("excludeBox").value = ui.excludeRaw;
-
-  (async function initApp(){
-  try {
-    await loadQuestions();
-    initFilters();
-    updateHeaderCounts();
-    renderEmptyState("Build a block to start.");
-    toast(`Loaded ${QUESTIONS.length} questions.`);
-  } catch (err) {
-    console.error(err);
-    renderEmptyState("Could not load questions.json");
-  }
-})();
 
   updateModeLabel();
 }
@@ -1572,15 +1549,24 @@ window.addEventListener("keydown", (e)=>{
 /** ===========================
  *  10) INIT
  *  =========================== */
-initFilters();
-updateHeaderCounts();
-if(session.block.length > 0){
-  // ensure index safe
-  if(session.index >= session.block.length) session.index = 0;
-  renderCurrentQuestion();
-} else {
-  renderEmptyState("Build a block to start.");
-}
+(async function initApp(){
+  try {
+    await loadQuestions();
+    initFilters();
+    updateHeaderCounts();
+    if(session.block.length > 0){
+      // ensure index safe
+      if(session.index >= session.block.length) session.index = 0;
+      renderCurrentQuestion();
+    } else {
+      renderEmptyState("Build a block to start.");
+    }
+    toast(`Loaded ${QUESTIONS.length} questions.`);
+  } catch (err) {
+    console.error(err);
+    renderEmptyState("Could not load questions.json");
+  }
+})();
 </script>
 </body>
 </html>
